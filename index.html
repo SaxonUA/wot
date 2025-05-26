@@ -17,7 +17,7 @@
 
     .wheel-wrapper {
       position: relative;
-      width: 400px;
+      width: 500px;
       margin: 60px auto 20px;
       filter: drop-shadow(0 0 15px #000);
     }
@@ -37,7 +37,7 @@
       height: 0;
       border-left: 30px solid transparent;
       border-right: 30px solid transparent;
-      border-bottom: 50px solid white;
+      border-bottom: 50px solid red;
       z-index: 100;
       filter: drop-shadow(0 0 10px #000);
     }
@@ -64,7 +64,7 @@
     .result {
       margin-top: 20px;
       font-size: 32px;
-      color: #ffa500;
+      color: #ffffff;
       text-shadow: 0 0 12px black;
     }
 
@@ -83,7 +83,7 @@
 </head>
 <body>
   <div class="wheel-wrapper">
-    <canvas id="trashWheel" width="400" height="400"></canvas>
+    <canvas id="trashWheel" width="500" height="500"></canvas>
     <div class="arrow"></div>
   </div>
   <button onclick="spin()">Обертати треш колесо</button>
@@ -92,6 +92,7 @@
   <script>
     const canvas = document.getElementById("trashWheel");
     const ctx = canvas.getContext("2d");
+
     const items = [
       "Кс63 — швидкісний режим",
       "Стрв — тільки осадний режим",
@@ -116,11 +117,30 @@
       "Bourrasque — стріляти лише по гравцям у взводі",
       "Obj. 268/4 — після кожного пострілу обертатись на 360°"
     ];
+
     const colors = ["#ff6600", "#000000"];
     const total = items.length;
     const anglePerItem = 2 * Math.PI / total;
     let currentAngle = 0;
     let spinning = false;
+
+    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(' ');
+      let line = '';
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = context.measureText(testLine);
+        const testWidth = metrics.width;
+        if (testWidth > maxWidth && n > 0) {
+          context.fillText(line, x, y);
+          line = words[n] + ' ';
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      context.fillText(line, x, y);
+    }
 
     function drawWheel(angle = 0, highlightIndex = -1) {
       const radius = canvas.width / 2;
@@ -134,13 +154,16 @@
         ctx.arc(radius, radius, radius, start, end);
         ctx.fillStyle = (i === highlightIndex) ? "#ffa600" : colors[i % 2];
         ctx.fill();
+
         ctx.save();
         ctx.translate(radius, radius);
         ctx.rotate(start + anglePerItem / 2);
-        ctx.fillStyle = "white";
-        ctx.font = "bold 11px Russo One";
         ctx.textAlign = "right";
-        ctx.fillText(items[i], radius - 10, 5);
+        ctx.font = "bold 10px Russo One";
+        ctx.fillStyle = (i === highlightIndex) ? "#ffffff" : "#999999";
+
+        wrapText(ctx, items[i], radius - 20, -5, 100, 12);
+
         ctx.restore();
       }
     }
@@ -151,11 +174,11 @@
 
       const targetIndex = Math.floor(Math.random() * total);
       const targetAngle = (3 * Math.PI / 2) - targetIndex * anglePerItem;
-      const extraSpins = 20 + Math.floor(Math.random() * 6); // 20–25 обертів
+      const extraSpins = 20 + Math.floor(Math.random() * 6);
       const finalAngle = 2 * Math.PI * extraSpins + targetAngle;
 
       let frame = 0;
-      const totalFrames = 500 + Math.floor(Math.random() * 100); // 10–12 сек
+      const totalFrames = 500 + Math.floor(Math.random() * 100);
       const startAngle = 0;
       currentAngle = 0;
 
