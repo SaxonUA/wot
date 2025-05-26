@@ -1,11 +1,191 @@
 <!DOCTYPE html>
-<html>
+<html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>WOT Extra</title>
+  <title>Треш Колесо Фортуни</title>
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      overflow: hidden;
+      font-family: 'Russo One', sans-serif;
+      color: white;
+      text-align: center;
+    }
+
+    .wheel-wrapper {
+      position: relative;
+      width: 400px;
+      margin: 60px auto 20px;
+      filter: drop-shadow(0 0 15px #000);
+    }
+
+    canvas {
+      width: 100%;
+      height: auto;
+      border-radius: 50%;
+    }
+
+    .arrow {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%) rotate(180deg);
+      width: 0;
+      height: 0;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+      border-bottom: 50px solid red;
+      z-index: 100;
+      filter: drop-shadow(0 0 10px #000);
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 14px 34px;
+      font-size: 18px;
+      font-weight: bold;
+      background: linear-gradient(145deg, #ff6600, #1a1a1a);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: linear-gradient(145deg, #ff8800, #2a2a2a);
+      transform: scale(1.05);
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 32px;
+      color: #ffa500;
+      text-shadow: 0 0 12px black;
+    }
+
+    @keyframes shake {
+      0%   { transform: translateX(-50%) rotate(180deg); }
+      25%  { transform: translateX(-50%) rotate(182deg); }
+      50%  { transform: translateX(-50%) rotate(178deg); }
+      75%  { transform: translateX(-50%) rotate(181deg); }
+      100% { transform: translateX(-50%) rotate(180deg); }
+    }
+
+    .arrow.shake {
+      animation: shake 0.4s ease-in-out;
+    }
+  </style>
 </head>
 <body>
-  <h1>Це третя сторінка</h1>
-  <p>Привіт з нового репозиторію!</p>
+  <div class="wheel-wrapper">
+    <canvas id="trashWheel" width="400" height="400"></canvas>
+    <div class="arrow"></div>
+  </div>
+  <button onclick="spin()">Обертати треш колесо</button>
+  <div class="result" id="result">...</div>
+
+  <script>
+    const canvas = document.getElementById("trashWheel");
+    const ctx = canvas.getContext("2d");
+    const items = [
+      "Кс63 — швидкісний режим",
+      "Стрв — тільки осадний режим",
+      "Ебр 105 — по червоній лінії мапи",
+      "Іс7 — стріляти тільки у тих, хто стріляв по мені",
+      "Арта — стріляти лише в одну ціль",
+      "Рхм — тільки в снайперському режимі",
+      "МБТ-Б — 2 фраги фугасами",
+      "Маус — їхати назад весь бій",
+      "279 — самознищитися за 2 хв",
+      "Ебр — вирізати всю арту",
+      "ЧіФ — віддатися артоводу",
+      "Об.277 — охороняти топ-3",
+      "Тайп5 — віддатися бабасі або Язі",
+      "279 — упоротися на МБТ-Б або Чіфа",
+      "Т110Е5 — раш ліворуч",
+      "Т110Е3 — раш праворуч",
+      "Jagdpz E100 — стріляти лише блайндами",
+      "T57 Heavy — не можна стріляти перші чотири хвилини бою",
+      "Bat.-Châtillon 25 t — стріляти лише в автоприцілі",
+      "BZ-176 — стріляти лише коли працює турбіна",
+      "Bourrasque — стріляти лише по гравцям у взводі",
+      "Obj. 268/4 — після кожного пострілу обертатись на 360°"
+    ];
+    const colors = ["#ff6600", "#000000"];
+    const total = items.length;
+    const anglePerItem = 2 * Math.PI / total;
+    let currentAngle = 0;
+    let spinning = false;
+
+    function drawWheel(angle = 0, highlightIndex = -1) {
+      const radius = canvas.width / 2;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < total; i++) {
+        const start = angle + i * anglePerItem;
+        const end = start + anglePerItem;
+        ctx.beginPath();
+        ctx.moveTo(radius, radius);
+        ctx.arc(radius, radius, radius, start, end);
+        ctx.fillStyle = (i === highlightIndex) ? "#ffa600" : colors[i % 2];
+        ctx.fill();
+        ctx.save();
+        ctx.translate(radius, radius);
+        ctx.rotate(start + anglePerItem / 2);
+        ctx.fillStyle = "white";
+        ctx.font = "bold 11px Russo One";
+        ctx.textAlign = "right";
+        ctx.fillText(items[i], radius - 10, 5);
+        ctx.restore();
+      }
+    }
+
+    function spin() {
+      if (spinning) return;
+      spinning = true;
+
+      const targetIndex = Math.floor(Math.random() * total);
+      const targetAngle = (3 * Math.PI / 2) - targetIndex * anglePerItem;
+      const extraSpins = 15 + Math.floor(Math.random() * 5);
+      const finalAngle = 2 * Math.PI * extraSpins + targetAngle;
+
+      let frame = 0;
+      const totalFrames = 400 + Math.floor(Math.random() * 100); // 8–10 сек
+      const startAngle = currentAngle;
+
+      const interval = setInterval(() => {
+        const t = frame / totalFrames;
+        const eased = easeOutCubic(t);
+        currentAngle = startAngle + (finalAngle - startAngle) * eased;
+        drawWheel(currentAngle);
+        frame++;
+
+        if (frame >= totalFrames) {
+          clearInterval(interval);
+          const normalized = currentAngle % (2 * Math.PI);
+          const resultIndex = Math.floor(((3 * Math.PI / 2 - normalized + 2 * Math.PI) % (2 * Math.PI)) / anglePerItem) % total;
+
+          drawWheel(currentAngle, resultIndex);
+          document.getElementById("result").textContent = items[resultIndex];
+          spinning = false;
+
+          const arrow = document.querySelector('.arrow');
+          arrow.classList.add('shake');
+          setTimeout(() => arrow.classList.remove('shake'), 400);
+        }
+      }, 20);
+    }
+
+    function easeOutCubic(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    drawWheel();
+  </script>
 </body>
 </html>
