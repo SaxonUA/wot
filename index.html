@@ -28,17 +28,18 @@
       border-radius: 50%;
     }
 
-    .arrow-style {
+    .arrow {
       position: absolute;
-      top: -35px;
+      top: -25px;
       left: 50%;
-      transform: translateX(-50%);
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(to bottom, #f83000, #c10000);
-      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-      filter: drop-shadow(0 0 8px #330000);
+      transform: translateX(-50%) rotate(180deg);
+      width: 0;
+      height: 0;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+      border-bottom: 50px solid red;
       z-index: 100;
+      filter: drop-shadow(0 0 10px #000);
     }
 
     button {
@@ -63,19 +64,19 @@
     .result {
       margin-top: 20px;
       font-size: 32px;
-      color: #ffa500;
+      color: #ffffff;
       text-shadow: 0 0 12px black;
     }
 
     @keyframes shake {
-      0%   { transform: translateX(-50%) rotate(0deg); }
-      25%  { transform: translateX(-50%) rotate(2deg); }
-      50%  { transform: translateX(-50%) rotate(-2deg); }
-      75%  { transform: translateX(-50%) rotate(1deg); }
-      100% { transform: translateX(-50%) rotate(0deg); }
+      0%   { transform: translateX(-50%) rotate(180deg); }
+      25%  { transform: translateX(-50%) rotate(182deg); }
+      50%  { transform: translateX(-50%) rotate(178deg); }
+      75%  { transform: translateX(-50%) rotate(181deg); }
+      100% { transform: translateX(-50%) rotate(180deg); }
     }
 
-    .arrow-style.shake {
+    .arrow.shake {
       animation: shake 0.4s ease-in-out;
     }
   </style>
@@ -83,7 +84,7 @@
 <body>
   <div class="wheel-wrapper">
     <canvas id="trashWheel" width="500" height="500"></canvas>
-    <div class="arrow-style" id="arrow"></div>
+    <div class="arrow"></div>
   </div>
   <button onclick="spin()">Обертати треш колесо</button>
   <div class="result" id="result">...</div>
@@ -197,7 +198,7 @@
           document.getElementById("result").textContent = items[resultIndex];
           spinning = false;
 
-          const arrow = document.getElementById('arrow');
+          const arrow = document.querySelector('.arrow');
           arrow.classList.add('shake');
           setTimeout(() => arrow.classList.remove('shake'), 400);
         }
