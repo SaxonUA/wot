@@ -37,7 +37,7 @@
       height: 0;
       border-left: 30px solid transparent;
       border-right: 30px solid transparent;
-      border-bottom: 50px solid red;
+      border-bottom: 50px solid white;
       z-index: 100;
       filter: drop-shadow(0 0 10px #000);
     }
@@ -151,12 +151,13 @@
 
       const targetIndex = Math.floor(Math.random() * total);
       const targetAngle = (3 * Math.PI / 2) - targetIndex * anglePerItem;
-      const extraSpins = 15 + Math.floor(Math.random() * 5);
+      const extraSpins = 20 + Math.floor(Math.random() * 6); // 20–25 обертів
       const finalAngle = 2 * Math.PI * extraSpins + targetAngle;
 
       let frame = 0;
-      const totalFrames = 400 + Math.floor(Math.random() * 100); // 8–10 сек
-      const startAngle = currentAngle;
+      const totalFrames = 500 + Math.floor(Math.random() * 100); // 10–12 сек
+      const startAngle = 0;
+      currentAngle = 0;
 
       const interval = setInterval(() => {
         const t = frame / totalFrames;
