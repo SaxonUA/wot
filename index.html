@@ -1,234 +1,303 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Треш Колесо Фортуни</title>
-  <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>WOT Вишибайло – ТОП-1 бій кожного гравця</title>
+
+  <!-- FlipClock & font for таймер -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
+    body {
       background: transparent;
-      overflow: hidden;
-      font-family: 'Russo One', sans-serif;
-      color: white;
-      text-align: center;
-    }
-
-    .wheel-wrapper {
-      position: relative;
-      width: 500px;
-      margin: 60px auto 20px;
-      filter: drop-shadow(0 0 15px #000);
-    }
-
-    canvas {
-      width: 100%;
-      height: auto;
-      border-radius: 50%;
-    }
-
-    .arrow {
-      position: absolute;
-      top: -35px;
-      left: 50%;
-      transform: translateX(-50%) rotate(180deg);
-      width: 70px;
-      height: 40px;
-      background: linear-gradient(to bottom, #ff3c00, #6a0000);
-      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-      border: 1px solid #330000;
-      box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.2), 0 0 10px #000;
-      z-index: 100;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 14px 34px;
-      font-size: 18px;
-      font-weight: bold;
-      background: linear-gradient(145deg, #ff6600, #1a1a1a);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: linear-gradient(145deg, #ff8800, #2a2a2a);
-      transform: scale(1.05);
-    }
-
-    .result-box {
-      margin: 25px auto;
+      color: #fff;
+      margin: 0;
       padding: 20px;
-      max-width: 250px;
-      border: 3px solid #ff6600;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 24px;
+      width: fit-content;
+      max-width: 95vw;
+      margin: 0 auto;
+    }
+
+    .title {
+      font-size: 36px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 5px;
+      color: orange;
+      text-shadow: 0 0 6px #000, 0 0 12px rgba(255,165,0,0.6);
+      position: relative;
+    }
+
+    .title.smack {
+      animation: smack 1s ease-out;
+    }
+
+    @keyframes smack {
+      0% { transform: translateY(0); }
+      20% { transform: translateY(-20px); }
+      40% { transform: translateY(30px); }
+      60% { transform: translateY(-10px); }
+      80% { transform: translateY(10px); }
+      100% { transform: translateY(0); }
+    }
+
+    .top-player-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+      min-height: 60px;
+      position: relative;
+    }
+
+    .top-player {
+      position: relative;
+      background: rgba(30, 30, 30, 0.6);
+      border-radius: 15px;
+      padding: 28px 80px;
+      font-size: 30px;
+      color: gold;
+      text-align: center;
+      text-shadow: 1px 1px 5px #000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: fadeIn 0.8s ease;
+      opacity: 0;
+      transform: scale(0.95);
+      animation-fill-mode: forwards;
+      transition: all 0.5s ease;
+    }
+
+    .top-player::before {
+      content: "\1F3C6";
+      font-size: 32px;
+      display: inline-block;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    .top-player::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 15px;
+      z-index: -1;
+      background: linear-gradient(270deg, white, yellow, orange, black, white);
+      background-size: 800% 800%;
+      animation: borderMove 36s linear infinite;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      -webkit-mask-composite: destination-out;
+      padding: 3px;
+      box-sizing: border-box;
+    }
+
+    @keyframes borderMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .new-leader {
+      position: absolute;
+      top: -30px;
+      background: rgba(255,165,0,0.8);
+      padding: 5px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 16px;
+      color: #000;
+      animation: fadeUp 2s ease;
+    }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(10px); }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-10px); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .card {
+      background: rgba(42, 42, 42, 0.6);
       border-radius: 12px;
-      background: rgba(0, 0, 0, 0.6);
-      box-shadow: 0 0 15px #000;
+      padding: 16px;
+      box-shadow: inset 0 0 5px #000, 0 0 10px rgba(255,255,255,0.05);
+      width: 200px;
+      transition: transform 0.2s ease;
+      text-align: center;
+      backdrop-filter: blur(6px);
     }
 
-    .result-box h2 {
-      margin: 0 0 12px;
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card .place {
       font-size: 20px;
-      color: #ff6600;
-      border-bottom: 1px solid #ff6600;
-      padding-bottom: 5px;
+      font-weight: bold;
+      margin-bottom: 6px;
     }
 
-    .result-box .battle-task {
-      font-size: 18px;
-      color: #ffffff;
-      text-shadow: 0 0 5px #000;
-      line-height: 1.4;
+    .card.silver {
+      border: 2px solid silver;
+      color: silver;
+    }
+    .card.bronze {
+      border: 2px solid #cd7f32;
+      color: #cd7f32;
+    }
+    .card.copper {
+      border: 2px solid #b87333;
+      color: #b87333;
+    }
+    .card.wood {
+      border: 2px solid #8B4513;
+      color: #deb887;
     }
 
-    @keyframes shake {
-      0%   { transform: translateX(-50%) rotate(180deg); }
-      25%  { transform: translateX(-50%) rotate(182deg); }
-      50%  { transform: translateX(-50%) rotate(178deg); }
-      75%  { transform: translateX(-50%) rotate(181deg); }
-      100% { transform: translateX(-50%) rotate(180deg); }
+    .card .nick {
+      font-size: 26px;
+      font-weight: bold;
+      color: #fff;
     }
 
-    .arrow.shake {
-      animation: shake 0.4s ease-in-out;
+    .card .tank {
+      font-size: 16px;
+      color: #aaa;
+      margin: 4px 0;
+    }
+
+    .card .points {
+      font-size: 26px;
+      font-weight: bold;
+      color: #00ffe7;
     }
   </style>
 </head>
 <body>
-  <div class="wheel-wrapper">
-    <canvas id="trashWheel" width="500" height="500"></canvas>
-    <div class="arrow"></div>
-  </div>
-
-  <button onclick="spin()">Обертати треш колесо</button>
-
-  <div class="result-box">
-    <h2>ЗАВДАННЯ НА БІЙ</h2>
-    <div class="battle-task" id="result">...</div>
+  <div class="container">
+    <div class="title" id="mainTitle">ВИШИБАЙЛО</div>
+    <div class="top-player-wrapper">
+      <div class="top-player" id="topPlayer"></div>
+    </div>
+    <div class="cards" id="cards"></div>
   </div>
 
   <script>
-    const canvas = document.getElementById("trashWheel");
-    const ctx = canvas.getContext("2d");
+    const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
+    const SHEET_NAME = "TURVIB";
+    const QUERY = `SELECT C, D, M WHERE M IS NOT NULL`;
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_NAME}&tq=${encodeURIComponent(QUERY)}`;
 
-    const items = [
-      "Кс63 — швидкісний режим",
-      "Стрв — тільки осадний режим",
-      "Ебр 105 — по червоній лінії мапи",
-      "Іс7 — стріляти тільки у тих, хто стріляв по мені",
-      "Арта — стріляти лише в одну ціль",
-      "Рхм — тільки в снайперському режимі",
-      "МБТ-Б — 2 фраги фугасами",
-      "Маус — їхати назад весь бій",
-      "Об.277 — охороняти топ-3",
-      "Т110Е5 — раш ліворуч",
-      "TVP T 50/51 - стріляти лише по танка в нікнеймі у кого є літера S",
-      "Т110Е3 — раш праворуч",
-      "Jagdpz E100 — стріляти лише блайндами",
-      "T57 Heavy — не можна стріляти перші чотири хвилини бою",
-      "Bat.-Châtillon 25 t — стріляти лише в автоприцілі",
-      "BZ-176 — стріляти лише коли працює турбіна",
-      "Bourrasque — стріляти лише по гравцям у взводі",
-      "Obj. 268/4 — після кожного пострілу обертатись на 360°"
-    ];
+    let lastTopKey = "";
 
-    const colors = ["#ff6600", "#000000"];
-    const total = items.length;
-    const anglePerItem = 2 * Math.PI / total;
-    let currentAngle = 0;
-    let spinning = false;
+    async function fetchTopPlayers() {
+      try {
+        const response = await fetch(url);
+        const text = await response.text();
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        const rows = json.table.rows || [];
 
-    function wrapText(context, text, x, y, maxWidth, lineHeight) {
-      const words = text.split(' ');
-      let line = '';
-      for (let n = 0; n < words.length; n++) {
-        const testLine = line + words[n] + ' ';
-        const metrics = context.measureText(testLine);
-        const testWidth = metrics.width;
-        if (testWidth > maxWidth && n > 0) {
-          context.fillText(line, x, y);
-          line = words[n] + ' ';
-          y += lineHeight;
-        } else {
-          line = testLine;
+        const playerMap = new Map();
+        rows.forEach(row => {
+          const nick = row.c[0]?.v;
+          const tank = row.c[1]?.v;
+          const points = Number(row.c[2]?.v);
+          if (!nick || !tank || isNaN(points)) return;
+          if (!playerMap.has(nick) || playerMap.get(nick).points < points) {
+            playerMap.set(nick, { nick, tank, points });
+          }
+        });
+
+        const battles = Array.from(playerMap.values()).sort((a, b) => b.points - a.points);
+        if (!battles.length) return;
+
+        const top = battles[0];
+        const topKey = `${top.nick}-${top.points}`;
+        const topEl = document.getElementById("topPlayer");
+
+        if (topKey !== lastTopKey) {
+          void topEl.offsetWidth;
+          topEl.style.animation = "fadeIn 0.8s ease forwards";
+          topEl.textContent = `${top.nick} — ${top.points} балів`;
+
+          const wrapper = document.querySelector(".top-player-wrapper");
+          const notice = document.createElement("div");
+          notice.className = "new-leader";
+          notice.textContent = "НОВИЙ ЛІДЕР!";
+          wrapper.appendChild(notice);
+
+          const title = document.getElementById("mainTitle");
+          title.classList.remove("smack");
+          void title.offsetWidth;
+          title.classList.add("smack");
+
+          setTimeout(() => notice.remove(), 2000);
+          lastTopKey = topKey;
         }
-      }
-      context.fillText(line, x, y);
-    }
 
-    function drawWheel(angle = 0, highlightIndex = -1) {
-      const radius = canvas.width / 2;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const cards = document.getElementById("cards");
+        cards.innerHTML = "";
 
-      for (let i = 0; i < total; i++) {
-        const start = angle + i * anglePerItem;
-        const end = start + anglePerItem;
-        ctx.beginPath();
-        ctx.moveTo(radius, radius);
-        ctx.arc(radius, radius, radius, start, end);
-        ctx.fillStyle = (i === highlightIndex) ? "#ffa600" : colors[i % 2];
-        ctx.fill();
+        battles.slice(1, 5).forEach((b, idx) => {
+          const card = document.createElement("div");
+          card.className = "card fade-in";
 
-        ctx.save();
-        ctx.translate(radius, radius);
-        ctx.rotate(start + anglePerItem / 2);
-        ctx.textAlign = "right";
-        ctx.font = "bold 10px Russo One";
-        ctx.fillStyle = (i === highlightIndex) ? "#ffffff" : "#999999";
+          if (idx === 0) card.classList.add("silver");
+          else if (idx === 1) card.classList.add("bronze");
+          else if (idx === 2) card.classList.add("copper");
+          else if (idx === 3) card.classList.add("wood");
 
-        wrapText(ctx, items[i], radius - 20, -5, 100, 12);
+          card.innerHTML = `
+            <div class="place">${idx + 2} місце</div>
+            <div class="nick">${b.nick}</div>
+            <div class="tank">${b.tank}</div>
+            <div class="points">${b.points} балів</div>
+          `;
 
-        ctx.restore();
+          cards.appendChild(card);
+        });
+      } catch (e) {
+        console.error("Помилка завантаження:", e);
+        document.getElementById("topPlayer").textContent = "Помилка";
       }
     }
 
-    function spin() {
-      if (spinning) return;
-      spinning = true;
-
-      const targetIndex = Math.floor(Math.random() * total);
-      const targetAngle = (3 * Math.PI / 2) - targetIndex * anglePerItem;
-      const extraSpins = 20 + Math.floor(Math.random() * 6);
-      const finalAngle = 2 * Math.PI * extraSpins + targetAngle;
-
-      let frame = 0;
-      const totalFrames = 500 + Math.floor(Math.random() * 100);
-      const startAngle = 0;
-      currentAngle = 0;
-
-      const interval = setInterval(() => {
-        const t = frame / totalFrames;
-        const eased = easeOutCubic(t);
-        currentAngle = startAngle + (finalAngle - startAngle) * eased;
-        drawWheel(currentAngle);
-        frame++;
-
-        if (frame >= totalFrames) {
-          clearInterval(interval);
-          const normalized = currentAngle % (2 * Math.PI);
-          const resultIndex = Math.floor(((3 * Math.PI / 2 - normalized + 2 * Math.PI) % (2 * Math.PI)) / anglePerItem) % total;
-
-          drawWheel(currentAngle, resultIndex);
-          document.getElementById("result").textContent = items[resultIndex];
-          spinning = false;
-
-          const arrow = document.querySelector('.arrow');
-          arrow.classList.add('shake');
-          setTimeout(() => arrow.classList.remove('shake'), 400);
-        }
-      }, 20);
-    }
-
-    function easeOutCubic(t) {
-      return 1 - Math.pow(1 - t, 3);
-    }
-
-    drawWheel();
+    fetchTopPlayers();
+    setInterval(fetchTopPlayers, 15000);
   </script>
 </body>
 </html>
