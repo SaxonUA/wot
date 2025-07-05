@@ -203,7 +203,7 @@
     .card .points {
       font-size: 26px;
       font-weight: bold;
-      color: #00ffe7;
+      color: #00ffe8;
     }
   </style>
 </head>
@@ -219,7 +219,7 @@
   <script>
     const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
     const SHEET_NAME = "TURVIB";
-    const QUERY = `SELECT C, D, M WHERE M IS NOT NULL`;
+    const QUERY = `SELECT C, D, O WHERE O IS NOT NULL`;
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_NAME}&tq=${encodeURIComponent(QUERY)}`;
 
     let lastTopKey = "";
@@ -252,7 +252,7 @@
         if (topKey !== lastTopKey) {
           void topEl.offsetWidth;
           topEl.style.animation = "fadeIn 0.8s ease forwards";
-          topEl.textContent = `${top.nick} — ${top.points} балів`;
+          topEl.textContent = `${top.nick} — ${top.points.toLocaleString("uk-UA")} балів`;
 
           const wrapper = document.querySelector(".top-player-wrapper");
           const notice = document.createElement("div");
@@ -285,7 +285,7 @@
             <div class="place">${idx + 2} місце</div>
             <div class="nick">${b.nick}</div>
             <div class="tank">${b.tank}</div>
-            <div class="points">${b.points} балів</div>
+            <div class="points">${b.points.toLocaleString("uk-UA")} балів</div>
           `;
 
           cards.appendChild(card);
